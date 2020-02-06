@@ -1,28 +1,11 @@
-# Angular-Phaser project seed
+# Space Rocks
 
-## Purpose
+Space Rocks game built with Angular and Phaser.
 
-This project is a template (or seed) to build in-browser games with [Phaser](https://phaser.io/). Phaser is already integrated with an Angular application and can be run as-is to see a very basic example of a Phaser animation.
+Original idea taken from [Intro to GameMaker - Space Rocks](https://www.youtube.com/watch?v=raGK_j1NVdE) Youtube video series by [FriendlyCosmonaut](https://twitter.com/friendly_cosmo) for [YoYo Games](https://www.yoyogames.com/).
 
-## How to use it
-
-### Use as project template in Github (recommended)
-
-Click on the green button **Use this template** on the Github repo home page. As simple as that! 🚀
-
-### Clone (alternative)
-
-If, for some reasons, you don't want to go through the Github interface, you can still clone the project and change its remote url.
-
-```
-$ git clone git@github.com:Blockost/angular-phaser-seed.git
-$ cd angular-phaser-seed
-$ git git remote add origin git@github.com:USERNAME/YOUR-REPO
-$ git push -u origin master
-```
-
-## Issues
-Feel free to open issues on Github.
+Original assets created by [FriendlyCosmonaut](https://twitter.com/friendly_cosmo).
 
 ## Licence
+
 MIT
