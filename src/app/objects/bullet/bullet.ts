@@ -27,6 +27,7 @@ export default class Bullet extends Phaser.GameObjects.Image implements onCollid
    */
   onCollide({ bodyB: self, bodyA: other }: { bodyB: MatterJS.BodyType; bodyA: MatterJS.BodyType }): void {
     const bullet = self.gameObject as Phaser.GameObjects.GameObject;
+    // TODO: 2020-02-07 Blockost Investigate "ERROR TypeError: Cannot read property 'destroy' of null"
     bullet.destroy();
 
     const gameObject = other.gameObject as Phaser.GameObjects.GameObject;
@@ -35,7 +36,6 @@ export default class Bullet extends Phaser.GameObjects.Image implements onCollid
       const asteroidHit = gameObject as Phaser.Physics.Matter.Image;
       this.createSmallerAsteroids(asteroidHit);
       this.generateDebris(asteroidHit);
-      // TODO: 2020-02-07 Blockost Investigate "ERROR TypeError: Cannot read property 'destroy' of null"
       asteroidHit.destroy();
     }
   }
