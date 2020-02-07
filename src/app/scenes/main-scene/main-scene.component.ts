@@ -30,6 +30,7 @@ export class MainSceneComponent extends BaseScene {
     this.load.image('asteroid_med', '/assets/sprites/spr_asteroid_med.png');
     this.load.image('asteroid_huge', '/assets/sprites/spr_asteroid_huge.png');
     this.load.image('bullet', '/assets/sprites/spr_bullet.png');
+    this.load.image('debris', '/assets/sprites/spr_debris.png');
   }
 
   create() {

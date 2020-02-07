@@ -1,11 +1,12 @@
 import * as Phaser from 'phaser';
 import Bullet from '../bullet/bullet';
+import onCollide from '../onCollide';
 
 export interface GameObjectOptions {
   wrap?: boolean;
 }
 
-export default class Player extends Phaser.GameObjects.Sprite {
+export default class Player extends Phaser.GameObjects.Sprite implements onCollide {
   private matterSprite: Phaser.Physics.Matter.Sprite;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -24,14 +25,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.matterSprite.setScale(1.2);
     this.matterSprite.setName('Player');
 
-    this.matterSprite.setOnCollide((data: Phaser.Types.Physics.Matter.MatterCollisionData) => {
-      const asteroid = data.bodyA.gameObject as Phaser.GameObjects.GameObject;
-      // XXX: 2020-02-06 Blockost Apparently, player is always objectB
-      const player = data.bodyB.gameObject as Phaser.GameObjects.GameObject;
-
-      // TODO: 2020-02-06 Blockost Once player hit an asteroid => explode + go to game over screen
-      console.warn('GAME OVER DUDE');
-    });
+    this.matterSprite.setOnCollide(this.onCollide.bind(this));
   }
 
   update(time: number, delta: number, cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys) {
@@ -52,5 +46,15 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
   private fireBullet() {
     new Bullet(this.scene, this.matterSprite.x, this.matterSprite.y, this.matterSprite.angle);
+  }
+
+  onCollide({ bodyB: self, bodyA: other }: { bodyB: MatterJS.BodyType; bodyA: MatterJS.BodyType }): void {
+    const player = self.gameObject as Phaser.GameObjects.GameObject;
+    const otherGameObject = other.gameObject as Phaser.GameObjects.GameObject;
+
+    if (otherGameObject.name.startsWith('asteroid')) {
+      // TODO: 2020-02-06 Blockost Once player hit an asteroid => explode + go to game over screen
+      console.warn('GAME OVER DUDE');
+    }
   }
 }
