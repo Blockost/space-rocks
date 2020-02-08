@@ -8,18 +8,24 @@ import Asteroid, { AsteroidType } from 'src/app/objects/asteroid/asteroid';
   template: ''
 })
 export class MainSceneComponent extends BaseScene {
-  player: Player;
-  cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
-  nonCollidingGroup: number;
+  private player: Player;
+  private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
+  private customUpdateList: Phaser.GameObjects.GameObject[] = [];
 
   constructor() {
     super('Main');
   }
 
   init() {
-    console.log('global plugins', this.plugins.plugins);
-    console.log('scene plugins', this.plugins.scenePlugins);
-    console.log(this.plugins.get('matter'));
+    super.init();
+
+    this.events.on('newObjectToUpdate', (object: Phaser.GameObjects.GameObject) => {
+      this.customUpdateList.push(object);
+    });
+
+    this.events.on('objectDestroyed', (object: Phaser.GameObjects.GameObject) => {
+      this.customUpdateList.splice(this.customUpdateList.indexOf(object), 1);
+    });
   }
 
   preload() {
@@ -36,7 +42,6 @@ export class MainSceneComponent extends BaseScene {
   create() {
     super.create();
 
-    this.nonCollidingGroup = this.matter.world.nextGroup(true);
     // Enable input keys
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
@@ -52,6 +57,7 @@ export class MainSceneComponent extends BaseScene {
 
   update(time: number, delta: number) {
     this.player.update(time, delta, this.cursorKeys);
+    this.customUpdateList.forEach((object) => object.update(time, delta));
   }
 
   private getRandomFromEnum(anyEnum: any): number {

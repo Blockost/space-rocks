@@ -21,6 +21,7 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
       }
     });
 
+    this.matterSprite.setName('player');
     this.matterSprite.setMass(100);
     this.matterSprite.setScale(1.2);
     this.matterSprite.setName('Player');

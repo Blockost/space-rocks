@@ -1,4 +1,6 @@
 import * as Phaser from 'phaser';
+import OnDestroy from '../onDestroy';
+import Debris from '../debris/debris';
 
 export enum AsteroidType {
   SMALL,
@@ -6,12 +8,14 @@ export enum AsteroidType {
   HUGE
 }
 
-export default class Asteroid extends Phaser.GameObjects.Image {
+export default class Asteroid extends Phaser.GameObjects.Image implements OnDestroy {
   private matterImage: Phaser.Physics.Matter.Image;
+  private objectType: AsteroidType;
 
   constructor(scene: Phaser.Scene, x: number, y: number, type: AsteroidType) {
     const texture = Asteroid.getAsteroidTexture(type);
     super(scene, x, y, texture);
+    this.objectType = type;
 
     this.matterImage = this.scene.matter.add.image(x, y, texture, null, {
       plugin: {
@@ -22,9 +26,7 @@ export default class Asteroid extends Phaser.GameObjects.Image {
       }
     });
 
-    this.matterImage.name = texture;
-    this.matterImage.setDataEnabled();
-    this.matterImage.setData('test', 'lala');
+    this.matterImage.setName(texture);
     this.matterImage.setBounce(1);
     this.matterImage.setFriction(0, 0);
     this.matterImage.setMass(Asteroid.getAsteroidMass(type));
@@ -33,6 +35,44 @@ export default class Asteroid extends Phaser.GameObjects.Image {
     const velocityX = Phaser.Math.FloatBetween(-0.8, 0.8);
     const velocityY = Phaser.Math.FloatBetween(-0.8, 0.8);
     this.matterImage.setVelocity(velocityX, velocityY);
+
+    this.matterImage.on('destroy', this.onDestroy.bind(this));
+  }
+
+  /**
+   * On destroy, create smaller asteroids and debris
+   */
+  onDestroy() {
+    this.createSmallerAsteroids();
+    this.generateDebris();
+    // Also destroy this game object. First destory was on matter game object
+    this.destroy();
+  }
+
+  private createSmallerAsteroids() {
+    switch (this.objectType) {
+      case AsteroidType.HUGE:
+        for (let i = 0; i < 2; i++) {
+          new Asteroid(this.scene, this.matterImage.x, this.matterImage.y, AsteroidType.MEDIUM);
+        }
+        break;
+
+      case AsteroidType.MEDIUM:
+        for (let i = 0; i < 2; i++) {
+          new Asteroid(this.scene, this.matterImage.x, this.matterImage.y, AsteroidType.SMALL);
+        }
+        break;
+
+      default:
+        // XXX: 2020-02-07 Blockost No asteroids created for AsteroidType.SMALL
+        break;
+    }
+  }
+
+  private generateDebris() {
+    for (let i = 0; i < 10; i++) {
+      new Debris(this.scene, this.matterImage.x, this.matterImage.y, Phaser.Math.FloatBetween(-180, 180));
+    }
   }
 
   static getAsteroidTexture(type: AsteroidType): string {
