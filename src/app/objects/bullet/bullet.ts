@@ -22,8 +22,13 @@ export default class Bullet extends Phaser.GameObjects.Image implements onCollid
    * When bullet hits an asteroid, destroy bullet and asteroid
    */
   onCollide({ bodyB: self, bodyA: other }: { bodyB: MatterJS.BodyType; bodyA: MatterJS.BodyType }): void {
+    // XXX: 2020-02-08 Blockost For some reasons, it happens that the bullet (self) is null here...
+    // Not sure why but as a quick fix, do not process collision if that happens.
+    if (!self || !other) {
+      return;
+    }
+
     const bullet = self.gameObject as Phaser.Physics.Matter.Image;
-    // TODO: 2020-02-07 Blockost Investigate "ERROR TypeError: Cannot read property 'destroy' of null"
     bullet.destroy();
 
     const gameObject = other.gameObject as Phaser.GameObjects.GameObject;
