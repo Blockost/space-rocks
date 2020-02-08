@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import BaseScene from '../base-scene.component';
 import Player from 'src/app/objects/player/player';
 import Asteroid, { AsteroidType } from 'src/app/objects/asteroid/asteroid';
+import EnumHelper from 'src/app/utils/enumHelper';
 
 @Component({
   selector: 'app-main-scene',
@@ -10,22 +11,9 @@ import Asteroid, { AsteroidType } from 'src/app/objects/asteroid/asteroid';
 export class MainSceneComponent extends BaseScene {
   private player: Player;
   private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
-  private customUpdateList: Phaser.GameObjects.GameObject[] = [];
 
   constructor() {
     super('Main');
-  }
-
-  init() {
-    super.init();
-
-    this.events.on('newObjectToUpdate', (object: Phaser.GameObjects.GameObject) => {
-      this.customUpdateList.push(object);
-    });
-
-    this.events.on('objectDestroyed', (object: Phaser.GameObjects.GameObject) => {
-      this.customUpdateList.splice(this.customUpdateList.indexOf(object), 1);
-    });
   }
 
   preload() {
@@ -47,7 +35,7 @@ export class MainSceneComponent extends BaseScene {
 
     // create asteroids
     for (let i = 0; i < 8; i++) {
-      const asteroidType = this.getRandomFromEnum(AsteroidType);
+      const asteroidType = EnumHelper.getRandomFromEnum(AsteroidType);
       new Asteroid(this, Phaser.Math.Between(0, 800), Phaser.Math.Between(0, 600), asteroidType);
     }
 
@@ -56,15 +44,8 @@ export class MainSceneComponent extends BaseScene {
   }
 
   update(time: number, delta: number) {
+    super.update(time, delta);
+
     this.player.update(time, delta, this.cursorKeys);
-    this.customUpdateList.forEach((object) => object.update(time, delta));
-  }
-
-  private getRandomFromEnum(anyEnum: any): number {
-    const enumKeys = Object.keys(anyEnum)
-      .map((key) => parseInt(key))
-      .filter((key) => !isNaN(key));
-
-    return enumKeys[Math.floor(Math.random() * enumKeys.length)];
   }
 }
