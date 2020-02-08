@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import OnDestroy from '../onDestroy';
 import Debris from '../debris/debris';
+import UIScene from 'src/app/scenes/ui-scene/ui.scene';
 
 export enum AsteroidType {
   SMALL,
@@ -40,9 +41,13 @@ export default class Asteroid extends Phaser.GameObjects.Image implements OnDest
   }
 
   /**
-   * On destroy, create smaller asteroids and debris
+   * On destroy, update score, create smaller asteroids and debris
    */
   onDestroy() {
+    const score = Asteroid.getAsteroidScore(this.objectType);
+    const uiScene = this.scene.scene.get(UIScene.KEY) as UIScene;
+    uiScene.updateScore(score);
+
     this.createSmallerAsteroids();
     this.generateDebris();
     // Also destroy this game object. First destory was on matter game object
@@ -96,6 +101,19 @@ export default class Asteroid extends Phaser.GameObjects.Image implements OnDest
         return 20;
       case AsteroidType.HUGE:
         return 100;
+      default:
+        throw new Error(`Unsupported asteroid type ${type}`);
+    }
+  }
+
+  static getAsteroidScore(type: AsteroidType): number {
+    switch (type) {
+      case AsteroidType.SMALL:
+        return 50;
+      case AsteroidType.MEDIUM:
+        return 20;
+      case AsteroidType.HUGE:
+        return 10;
       default:
         throw new Error(`Unsupported asteroid type ${type}`);
     }

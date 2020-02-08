@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { Event } from 'src/app/utils/event';
+import { GameEvent } from 'src/app/utils/gameEvent';
 
 export default class Debris extends Phaser.GameObjects.Image {
   private matterImage: Phaser.Physics.Matter.Image;
@@ -16,14 +16,14 @@ export default class Debris extends Phaser.GameObjects.Image {
     this.matterImage.setMass(1);
     this.matterImage.thrust(0.005);
 
-    this.scene.events.emit(Event.NEW_OBJECT_TO_UPDATE, this);
+    this.scene.events.emit(GameEvent.NEW_OBJECT_TO_UPDATE, this);
   }
 
   update(time: number, delta: number) {
     // Fade debris away and destroy when invisible
     this.matterImage.alpha -= 0.01;
     if (this.matterImage.alpha <= 0) {
-      this.scene.events.emit(Event.OBJECT_DESTROYED, this);
+      this.scene.events.emit(GameEvent.OBJECT_DESTROYED, this);
       this.matterImage.destroy();
       this.destroy();
     }

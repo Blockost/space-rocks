@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HelloWorldSceneComponent } from './scenes/hello-world-scene/hello-world-scene.component';
 import { MainSceneComponent } from './scenes/main-scene/main-scene.component';
+import UIScene from './scenes/ui-scene/ui.scene';
 
 @Component({
   selector: 'app-root',
@@ -29,9 +29,11 @@ export class AppComponent {
           debug: false
         }
       },
-      scene: MainSceneComponent
+      scene: [MainSceneComponent, UIScene]
     };
 
     this.game = new Phaser.Game(gameConfig);
+    // Starts UI scene
+    this.game.scene.start('UI');
   }
 }

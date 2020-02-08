@@ -9,11 +9,12 @@ import EnumHelper from 'src/app/utils/enumHelper';
   template: ''
 })
 export class MainSceneComponent extends BaseScene {
+  static readonly KEY = 'MAIN';
   private player: Player;
   private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
-    super('Main');
+    super(MainSceneComponent.KEY);
   }
 
   preload() {
