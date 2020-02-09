@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import onCollide from '../onCollide';
+import onCollide from './behaviors/onCollide';
 
 export default class Bullet extends Phaser.GameObjects.Image implements onCollide {
   private matterImage: Phaser.Physics.Matter.Image;

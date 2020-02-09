@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { MainSceneComponent } from './scenes/main-scene/main-scene.component';
-import UIScene from './scenes/ui-scene/ui.scene';
+import { MainSceneComponent } from './scenes/main.scene';
+import UIScene from './scenes/ui.scene';
 
 @Component({
   selector: 'app-root',

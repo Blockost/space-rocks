@@ -1,13 +1,8 @@
-import { Component } from '@angular/core';
-import BaseScene from '../base-scene.component';
-import Player from 'src/app/objects/player/player';
-import Asteroid, { AsteroidType } from 'src/app/objects/asteroid/asteroid';
+import BaseScene from './base.scene';
+import Player from 'src/app/objects/player';
+import Asteroid, { AsteroidType } from 'src/app/objects/asteroid';
 import EnumHelper from 'src/app/utils/enumHelper';
 
-@Component({
-  selector: 'app-main-scene',
-  template: ''
-})
 export class MainSceneComponent extends BaseScene {
   static readonly KEY = 'MAIN';
   private player: Player;

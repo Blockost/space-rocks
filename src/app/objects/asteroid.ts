@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
-import OnDestroy from '../onDestroy';
-import Debris from '../debris/debris';
-import UIScene from 'src/app/scenes/ui-scene/ui.scene';
+import OnDestroy from './behaviors/onDestroy';
+import Debris from 'src/app/objects/debris';
+import UIScene from 'src/app/scenes/ui.scene';
 
 export enum AsteroidType {
   SMALL,

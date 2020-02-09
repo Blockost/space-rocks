@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 
-import BaseScene from '../base-scene.component';
+import BaseScene from './base.scene';
 
 export default class UIScene extends BaseScene {
   static readonly KEY = 'UI';

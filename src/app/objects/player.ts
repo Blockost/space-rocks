@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
-import Bullet from '../bullet/bullet';
-import onCollide from '../onCollide';
+import Bullet from './bullet';
+import onCollide from './behaviors/onCollide';
 
 export interface GameObjectOptions {
   wrap?: boolean;
