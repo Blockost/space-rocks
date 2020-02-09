@@ -3,13 +3,13 @@ import Player from 'src/app/objects/player';
 import Asteroid, { AsteroidType } from 'src/app/objects/asteroid';
 import EnumHelper from 'src/app/utils/enumHelper';
 
-export class MainSceneComponent extends BaseScene {
+export default class MainScene extends BaseScene {
   static readonly KEY = 'MAIN';
   private player: Player;
   private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
-    super(MainSceneComponent.KEY);
+    super(MainScene.KEY);
   }
 
   preload() {

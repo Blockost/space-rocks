@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { MainSceneComponent } from './scenes/main.scene';
+import MainScene from './scenes/main.scene';
 import UIScene from './scenes/ui.scene';
+import StartScene from './scenes/start.scene';
 
 @Component({
   selector: 'app-root',
@@ -29,11 +30,10 @@ export class AppComponent {
           debug: false
         }
       },
-      scene: [MainSceneComponent, UIScene]
+      // By default, first scene is started automatically
+      scene: [StartScene, UIScene, MainScene]
     };
 
     this.game = new Phaser.Game(gameConfig);
-    // Starts UI scene
-    this.game.scene.start('UI');
   }
 }
