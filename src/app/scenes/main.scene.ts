@@ -2,14 +2,20 @@ import BaseScene from './base.scene';
 import Player from 'src/app/objects/player';
 import Asteroid, { AsteroidType } from 'src/app/objects/asteroid';
 import EnumHelper from 'src/app/utils/enumHelper';
+import { SceneKeys } from './sceneKeys';
+import { GameEvent } from '../utils/gameEvent';
+import GameoverScene from './gameover.scene';
 
 export default class MainScene extends BaseScene {
-  static readonly KEY = 'MAIN';
+  private readonly MAX_SCORE = 500;
+  private scoreText: Phaser.GameObjects.Text;
+  private score = 0;
+  private livesText: Phaser.GameObjects.Text;
   private player: Player;
   private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
-    super(MainScene.KEY);
+    super(SceneKeys.MainScene);
   }
 
   preload() {
@@ -37,11 +43,35 @@ export default class MainScene extends BaseScene {
 
     // Create player
     this.player = new Player(this, 600, 100);
+
+    // Create score
+    this.scoreText = this.add.text(10, 10, this.buildScoreText(), { fontSize: '32px', fill: '#fff' });
+    this.events.on(GameEvent.UPDATE_SCORE, this.onUpdateScore.bind(this));
+    this.events.on(GameEvent.PLAYER_DEAD, this.onPlayerDead.bind(this));
   }
 
   update(time: number, delta: number) {
     super.update(time, delta);
 
     this.player.update(time, delta, this.cursorKeys);
+  }
+
+  private onUpdateScore(scoreToAdd: number) {
+    this.score += scoreToAdd;
+    this.scoreText.setText(this.buildScoreText());
+
+    if (this.score >= this.MAX_SCORE) {
+      this.scene.start(SceneKeys.WinScene);
+      this.scene.remove(SceneKeys.MainScene);
+    }
+  }
+
+  private buildScoreText(): string {
+    return `Score: ${this.score}`;
+  }
+
+  private onPlayerDead() {
+    this.scene.stop(SceneKeys.MainScene);
+    this.scene.start(SceneKeys.GameoverScene).bringToTop();
   }
 }

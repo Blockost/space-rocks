@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 import OnDestroy from './behaviors/onDestroy';
 import Debris from 'src/app/objects/debris';
-import UIScene from 'src/app/scenes/ui.scene';
+import { GameEvent } from '../utils/gameEvent';
 
 export enum AsteroidType {
   SMALL,
@@ -26,6 +26,7 @@ export default class Asteroid extends Phaser.GameObjects.Image implements OnDest
         }
       }
     });
+    this.matterImage.setData('instance', this);
 
     this.matterImage.setName(texture);
     this.matterImage.setBounce(1);
@@ -37,7 +38,7 @@ export default class Asteroid extends Phaser.GameObjects.Image implements OnDest
     const velocityY = Phaser.Math.FloatBetween(-0.8, 0.8);
     this.matterImage.setVelocity(velocityX, velocityY);
 
-    this.matterImage.on('destroy', this.onDestroy.bind(this));
+    this.on('destroy', this.onDestroy.bind(this));
   }
 
   /**
@@ -45,13 +46,11 @@ export default class Asteroid extends Phaser.GameObjects.Image implements OnDest
    */
   onDestroy() {
     const score = Asteroid.getAsteroidScore(this.objectType);
-    const uiScene = this.scene.scene.get(UIScene.KEY) as UIScene;
-    uiScene.updateScore(score);
+    this.scene.events.emit(GameEvent.UPDATE_SCORE, score);
 
     this.createSmallerAsteroids();
     this.generateDebris();
-    // Also destroy this game object. First destory was on matter game object
-    this.destroy();
+    this.matterImage.destroy();
   }
 
   private createSmallerAsteroids() {

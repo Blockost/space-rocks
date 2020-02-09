@@ -1,19 +1,17 @@
 import BaseScene from './base.scene';
-import MainScene from './main.scene';
-import UIScene from './ui.scene';
 import TextStyleHelper from '../utils/textStyleHelper';
+import { SceneKeys } from './sceneKeys';
+import MainScene from './main.scene';
 
 export default class StartScene extends BaseScene {
-  static readonly KEY = 'START';
   constructor() {
-    super(StartScene.KEY);
+    super(SceneKeys.StartScene);
   }
 
   create() {
-    const gameWidth = this.game.config.width as number;
-
     super.create();
 
+    const gameWidth = this.game.config.width as number;
     const headerStyle = TextStyleHelper.forHeader();
     const subheaderStyle = TextStyleHelper.forSubheader();
     const paragraphStyle = TextStyleHelper.forParagraph();
@@ -28,9 +26,8 @@ export default class StartScene extends BaseScene {
     this.add.text(gameWidth / 2, 500, '>> PRESS ENTER TO START <<', subheaderStyle).setOrigin(0.5);
 
     this.input.keyboard.addKey('ENTER').once('down', () => {
-      this.scene.start(UIScene.KEY);
-      this.scene.start(MainScene.KEY);
-      this.scene.remove(StartScene.KEY);
+      this.scene.stop(SceneKeys.StartScene);
+      this.scene.add(SceneKeys.MainScene, MainScene, true);
     });
   }
 }

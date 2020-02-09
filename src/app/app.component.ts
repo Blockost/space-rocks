@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import MainScene from './scenes/main.scene';
-import UIScene from './scenes/ui.scene';
 import StartScene from './scenes/start.scene';
+import MainScene from './scenes/main.scene';
+import WinScene from './scenes/win.scene';
+import GameoverScene from './scenes/gameover.scene';
 
 @Component({
   selector: 'app-root',
@@ -30,8 +31,8 @@ export class AppComponent {
           debug: false
         }
       },
-      // By default, first scene is started automatically
-      scene: [StartScene, UIScene, MainScene]
+      // Main scene is added/removed programmatically in order to reset it
+      scene: [StartScene, WinScene, GameoverScene]
     };
 
     this.game = new Phaser.Game(gameConfig);

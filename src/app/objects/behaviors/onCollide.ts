@@ -5,5 +5,6 @@ export default interface onCollide {
   /**
    * Method to be called when a collision occurs with the given object.
    */
-  onCollide({ bodyB: self, bodyA: other }: { bodyB: MatterJS.BodyType; bodyA: MatterJS.BodyType }): void;
+
+  onCollide(collisionData: Phaser.Types.Physics.Matter.MatterCollisionData): void;
 }

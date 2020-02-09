@@ -1,12 +1,15 @@
 import * as Phaser from 'phaser';
 import Bullet from './bullet';
 import onCollide from './behaviors/onCollide';
+import { GameEvent } from '../utils/gameEvent';
 
 export interface GameObjectOptions {
   wrap?: boolean;
 }
 
 export default class Player extends Phaser.GameObjects.Sprite implements onCollide {
+  private readonly MAX_LIVES = 1;
+  private remainingLives = this.MAX_LIVES;
   private matterSprite: Phaser.Physics.Matter.Sprite;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -49,13 +52,31 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
     new Bullet(this.scene, this.matterSprite.x, this.matterSprite.y, this.matterSprite.angle);
   }
 
-  onCollide({ bodyB: self, bodyA: other }: { bodyB: MatterJS.BodyType; bodyA: MatterJS.BodyType }): void {
-    const player = self.gameObject as Phaser.GameObjects.GameObject;
-    const otherGameObject = other.gameObject as Phaser.GameObjects.GameObject;
+  onCollide(collisionData: Phaser.Types.Physics.Matter.MatterCollisionData): void {
+    // TODO: 2020-02-09 Blockost Check collision, no collision with asteroids created
+    // from a bigger one. It's really weird. might have something to do with the new check below
+    if (!collisionData.bodyA.gameObject || !collisionData.bodyB.gameObject) {
+      return;
+    }
 
-    if (otherGameObject.name.startsWith('asteroid')) {
-      // TODO: 2020-02-06 Blockost Once player hit an asteroid => explode + go to game over screen
-      console.warn('GAME OVER DUDE');
+    const gameObjectA = collisionData.bodyA.gameObject as Phaser.GameObjects.GameObject;
+    const gameObjectB = collisionData.bodyB.gameObject as Phaser.GameObjects.GameObject;
+
+    let self: Phaser.GameObjects.GameObject;
+    let other: Phaser.GameObjects.GameObject;
+    if (gameObjectA.name === 'player') {
+      self = gameObjectA;
+      other = gameObjectB;
+    } else {
+      self = gameObjectB;
+      other = gameObjectA;
+    }
+
+    if (other.name.startsWith('asteroid')) {
+      this.remainingLives--;
+      if (this.remainingLives <= 0) {
+        this.scene.events.emit(GameEvent.PLAYER_DEAD);
+      }
     }
   }
 }
