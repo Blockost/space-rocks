@@ -27,7 +27,6 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
     this.matterSprite.setName('player');
     this.matterSprite.setMass(100);
     this.matterSprite.setScale(1.2);
-    this.matterSprite.setName('Player');
 
     this.matterSprite.setOnCollide(this.onCollide.bind(this));
   }
@@ -53,8 +52,6 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
   }
 
   onCollide(collisionData: Phaser.Types.Physics.Matter.MatterCollisionData): void {
-    // TODO: 2020-02-09 Blockost Check collision, no collision with asteroids created
-    // from a bigger one. It's really weird. might have something to do with the new check below
     if (!collisionData.bodyA.gameObject || !collisionData.bodyB.gameObject) {
       return;
     }
@@ -71,6 +68,9 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
       self = gameObjectB;
       other = gameObjectA;
     }
+
+    console.log('self', self);
+    console.log('other', other);
 
     if (other.name.startsWith('asteroid')) {
       this.remainingLives--;
