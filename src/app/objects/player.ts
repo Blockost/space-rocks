@@ -69,9 +69,6 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
       other = gameObjectA;
     }
 
-    console.log('self', self);
-    console.log('other', other);
-
     if (other.name.startsWith('asteroid')) {
       this.remainingLives--;
       if (this.remainingLives <= 0) {
