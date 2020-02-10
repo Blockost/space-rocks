@@ -8,6 +8,12 @@ export default class GameoverScene extends BaseScene {
     super(SceneKeys.GameoverScene);
   }
 
+  preload() {
+    super.preload();
+
+    this.load.audio('lose', '/assets/sfx/snd_lose.wav');
+  }
+
   create() {
     super.create();
 
@@ -18,6 +24,8 @@ export default class GameoverScene extends BaseScene {
 
     this.add.text(gameWidth / 2, 200, "YOU LOSE :'(", headerStyle).setOrigin(0.5);
     this.add.text(gameWidth / 2, 500, '>> PRESS ENTER TO RESTART <<', subheaderStyle).setOrigin(0.5);
+
+    this.sound.play('lose');
 
     this.input.keyboard.addKey('ENTER').once('down', () => {
       // restart main scene

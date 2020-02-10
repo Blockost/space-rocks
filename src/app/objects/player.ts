@@ -101,6 +101,7 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
 
   private fireBullet() {
     new Bullet(this.scene, this.matterSprite.x, this.matterSprite.y, this.matterSprite.angle);
+    this.scene.sound.play('fire');
   }
 
   onCollide(collisionData: Phaser.Types.Physics.Matter.MatterCollisionData): void {

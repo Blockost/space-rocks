@@ -8,6 +8,12 @@ export default class StartScene extends BaseScene {
     super(SceneKeys.StartScene);
   }
 
+  preload() {
+    super.preload();
+
+    this.load.audio('theme', '/assets/sfx/msc_song.wav');
+  }
+
   create() {
     super.create();
 
@@ -25,7 +31,10 @@ export default class StartScene extends BaseScene {
 
     this.add.text(gameWidth / 2, 500, '>> PRESS ENTER TO START <<', subheaderStyle).setOrigin(0.5);
 
+    this.sound.play('theme', { loop: true });
+
     this.input.keyboard.addKey('ENTER').once('down', () => {
+      this.sound.stopAll();
       this.scene.stop(SceneKeys.StartScene);
       this.scene.add(SceneKeys.MainScene, MainScene, true);
     });

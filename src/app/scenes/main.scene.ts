@@ -26,6 +26,10 @@ export default class MainScene extends BaseScene {
     this.load.image('asteroid_huge', '/assets/sprites/spr_asteroid_huge.png');
     this.load.image('bullet', '/assets/sprites/spr_bullet.png');
     this.load.image('debris', '/assets/sprites/spr_debris.png');
+
+    this.load.audio('fire', '/assets/sfx/snd_zap.wav');
+    this.load.audio('hit', '/assets/sfx/snd_hurt.wav');
+    this.load.audio('die', '/assets/sfx/snd_die.wav');
   }
 
   create() {
@@ -77,6 +81,7 @@ export default class MainScene extends BaseScene {
   }
 
   private onPlayerHit(remainingLives: number) {
+    this.sound.play('hit');
     this.remaininglivesText.setText(this.buildRemainingLivesText(remainingLives));
   }
 
@@ -85,6 +90,7 @@ export default class MainScene extends BaseScene {
   }
 
   private onPlayerDead() {
+    this.sound.play('die');
     this.scene.stop(SceneKeys.MainScene);
     this.scene.start(SceneKeys.GameoverScene).bringToTop();
   }
