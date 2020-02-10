@@ -43,6 +43,11 @@ export default abstract class BaseScene extends Phaser.Scene {
 
   /**
    * Child scenes overridding this method should call it before anything else.
+   *
+   * @param time the current time. Either a High Resolution Timer value if it comes from Request Animation
+   * Frame, or Date.now using SetTimeout.
+   * @param delta The delta time in ms since the last frame. This is a smoothed and capped value based
+   *  on the FPS rate.
    */
   update(time: number, delta: number) {
     this.customUpdateList.forEach((object) => object.update(time, delta));

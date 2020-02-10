@@ -8,9 +8,18 @@ export interface GameObjectOptions {
 }
 
 export default class Player extends Phaser.GameObjects.Sprite implements onCollide {
-  private readonly MAX_LIVES = 1;
-  private remainingLives = this.MAX_LIVES;
+  static MAX_LIVES = 2;
+  private remainingLives = Player.MAX_LIVES;
   private matterSprite: Phaser.Physics.Matter.Sprite;
+  private hasImmunity = false;
+  private currentImmunityTime = 0;
+  private maxImmunityTime = 3000;
+  private immunityAnimation: Phaser.Tweens.Tween;
+  private hasBeenHit = false;
+  private defaultColor = 0xffffff;
+  private hitColor = 0xff0000;
+  private currentHasBeenHitTime = 0;
+  private maxHasBeenHitTime = 3000;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'ship');
@@ -29,6 +38,20 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
     this.matterSprite.setScale(1.2);
 
     this.matterSprite.setOnCollide(this.onCollide.bind(this));
+
+    // Animations
+    this.immunityAnimation = this.scene.add.tween({
+      targets: this.matterSprite,
+      ease: 'Cubic',
+      duration: 100,
+      alpha: { from: 0, to: 1 },
+      yoyo: true,
+      repeat: -1,
+      paused: true
+    });
+
+    // When starting, player has immunity for some time in case it spawns next to an asteroid
+    this.makeImmune();
   }
 
   update(time: number, delta: number, cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys) {
@@ -45,6 +68,35 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
     if (this.scene.input.keyboard.checkDown(cursorKeys.space, 500)) {
       this.fireBullet();
     }
+
+    // Update player statuses
+    this.updateImmunity(delta);
+    this.updateHasBeenHit(delta);
+  }
+
+  makeImmune() {
+    this.hasImmunity = true;
+    this.currentImmunityTime = 0;
+    this.immunityAnimation.resume();
+  }
+
+  makeNotImmune() {
+    this.hasImmunity = false;
+    this.currentImmunityTime = 0;
+    this.immunityAnimation.pause();
+    this.matterSprite.setAlpha(1);
+  }
+
+  markAsHit() {
+    this.hasBeenHit = true;
+    this.matterSprite.setTintFill(this.hitColor);
+    this.currentHasBeenHitTime = 0;
+  }
+
+  markAsNotHit() {
+    this.hasBeenHit = false;
+    this.matterSprite.setTintFill(this.defaultColor);
+    this.currentHasBeenHitTime = 0;
   }
 
   private fireBullet() {
@@ -70,9 +122,41 @@ export default class Player extends Phaser.GameObjects.Sprite implements onColli
     }
 
     if (other.name.startsWith('asteroid')) {
-      this.remainingLives--;
+      // Ignore if player has immunity
+      if (this.hasImmunity) {
+        return;
+      }
+
+      this.onHit();
+
       if (this.remainingLives <= 0) {
         this.scene.events.emit(GameEvent.PLAYER_DEAD);
+      }
+    }
+  }
+
+  private onHit() {
+    this.remainingLives--;
+    this.scene.events.emit(GameEvent.PLAYER_HIT, this.remainingLives);
+    this.markAsHit();
+    // When player has been hit, grant immunity for a short time
+    this.makeImmune();
+  }
+
+  private updateImmunity(delta: number) {
+    if (this.hasImmunity) {
+      this.currentImmunityTime += delta;
+      if (this.currentImmunityTime >= this.maxImmunityTime) {
+        this.makeNotImmune();
+      }
+    }
+  }
+
+  private updateHasBeenHit(delta: number) {
+    if (this.hasBeenHit) {
+      this.currentHasBeenHitTime += delta;
+      if (this.currentHasBeenHitTime >= this.maxHasBeenHitTime) {
+        this.markAsNotHit();
       }
     }
   }

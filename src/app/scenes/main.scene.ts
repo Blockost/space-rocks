@@ -4,13 +4,12 @@ import Asteroid, { AsteroidType } from 'src/app/objects/asteroid';
 import EnumHelper from 'src/app/utils/enumHelper';
 import { SceneKeys } from './sceneKeys';
 import { GameEvent } from '../utils/gameEvent';
-import GameoverScene from './gameover.scene';
 
 export default class MainScene extends BaseScene {
   private readonly MAX_SCORE = 500;
   private scoreText: Phaser.GameObjects.Text;
   private score = 0;
-  private livesText: Phaser.GameObjects.Text;
+  private remaininglivesText: Phaser.GameObjects.Text;
   private player: Player;
   private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
@@ -44,9 +43,16 @@ export default class MainScene extends BaseScene {
     // Create player
     this.player = new Player(this, 600, 100);
 
-    // Create score
+    // Create UI
     this.scoreText = this.add.text(10, 10, this.buildScoreText(), { fontSize: '32px', fill: '#fff' });
+    this.remaininglivesText = this.add.text(10, 50, this.buildRemainingLivesText(Player.MAX_LIVES), {
+      fontSize: '32px',
+      fill: '#fff'
+    });
+
+    // Bind events
     this.events.on(GameEvent.UPDATE_SCORE, this.onUpdateScore.bind(this));
+    this.events.on(GameEvent.PLAYER_HIT, this.onPlayerHit.bind(this));
     this.events.on(GameEvent.PLAYER_DEAD, this.onPlayerDead.bind(this));
   }
 
@@ -68,6 +74,14 @@ export default class MainScene extends BaseScene {
 
   private buildScoreText(): string {
     return `Score: ${this.score}`;
+  }
+
+  private onPlayerHit(remainingLives: number) {
+    this.remaininglivesText.setText(this.buildRemainingLivesText(remainingLives));
+  }
+
+  private buildRemainingLivesText(remainingLives: number): string {
+    return `Lives: ${remainingLives}`;
   }
 
   private onPlayerDead() {
