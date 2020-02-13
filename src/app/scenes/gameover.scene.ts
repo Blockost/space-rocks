@@ -1,7 +1,6 @@
 import BaseScene from './base.scene';
 import { SceneKeys } from './sceneKeys';
 import TextStyleHelper from '../utils/textStyleHelper';
-import MainScene from './main.scene';
 
 export default class GameoverScene extends BaseScene {
   constructor() {
